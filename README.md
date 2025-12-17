@@ -34,6 +34,18 @@ function App() {
   const dataResolver = async (metric: string, grain: string, fromTime: Date, toTime: Date) => {
     // Fetch data from your API
     const response = await fetch(`/api/metrics/${metric}?from=${fromTime.toISOString()}&to=${toTime.toISOString()}`);
+
+    // Check if the response is successful
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    }
+
+    // Check if the response is JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      throw new Error('API returned non-JSON response. Check your API endpoint.');
+    }
+
     return response.json();
   };
 
