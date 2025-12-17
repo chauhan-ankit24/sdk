@@ -1,0 +1,33 @@
+# Source code
+src/
+
+# Configuration files
+.eslintrc.js
+tsconfig.json
+rollup.config.js
+
+# Git and npm files
+.gitignore
+.npmignore
+
+# Changelog
+CHANGELOG.md
+
+# Package files
+package.json
+package-lock.json
+
+# IDE files
+.vscode/
+
+# Logs
+*.log
+
+# Environment variables
+.env*
+
+# OS generated files
+.DS_Store
+
+# TypeScript build info
+*.tsbuildinfo

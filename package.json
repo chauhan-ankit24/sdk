@@ -1,0 +1,56 @@
+{
+  "name": "insight-sdk",
+  "version": "1.0.0",
+  "description": "A React SDK for displaying insights with interactive charts and data visualizations",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "http-server . -p 3000 -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "sdk",
+    "insights",
+    "charts",
+    "data-visualization",
+    "typescript"
+  ],
+  "author": "Insight SDK Team",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/insight-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/insight-sdk/issues"
+  },
+  "homepage": "https://github.com/your-username/insight-sdk#readme",
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "recharts": "^3.6.0",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "http-server": "^14.1.1",
+    "rollup": "^4.53.5",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "typescript": "^5.9.3"
+  }
+}
