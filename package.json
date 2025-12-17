@@ -1,6 +1,6 @@
 {
   "name": "insight-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React SDK for displaying insights with interactive charts and data visualizations",
   "main": "dist/index.js",
   "module": "dist/index.js",
