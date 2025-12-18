@@ -1,6 +1,6 @@
 {
   "name": "insight-sdk",
-  "version": "1.0.20",
+  "version": "1.1.0",
   "description": "A React SDK for displaying insights with interactive charts and data visualizations",
   "author": "Insight SDK Team",
   "license": "ISC",
@@ -46,20 +46,22 @@
     "react-dom": ">=16.8 <20"
   },
   "dependencies": {
-    "recharts": "^3.6.0",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "http-server": "^14.1.1",
+    "postcss": "^8.5.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^3.6.0",
     "rollup": "^4.53.5",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "typescript": "^5.9.3",
-    "http-server": "^14.1.1"
+    "rollup-plugin-postcss": "^4.0.2",
+    "typescript": "^5.9.3"
   }
 }

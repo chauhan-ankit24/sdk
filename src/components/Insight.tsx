@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { InsightProps } from "../types";
 import { calculateTimeRange } from "../utils/timeUtils";
 import {
   transformTrendData,
   transformContributorData,
 } from "../utils/transformers";
+import ErrorState from "../states/error";
+import EmptyState from "../states/empty";
+import LoaderState from "../states/loader";
 import TrendChart from "./TrendChart";
 import ContributorChart from "./ContributorChart";
+import InsightCache from "../cache/InsightCache";
+import { InsightErrorBoundary } from "../errorBoundary/ErrorBoundary";
 
 export const Insight: React.FC<InsightProps> = ({
   type,
@@ -18,257 +23,140 @@ export const Insight: React.FC<InsightProps> = ({
   dimensionValuesResolver,
   width = "100%",
   height = "400px",
+  refreshInterval = 0,
 }) => {
   const [data, setData] = useState<any[]>([]);
   const [dimensionValues, setDimensionValues] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Validate props
+  if (loading) {
+    return <LoaderState type={type} />;
+  }
+
+  if (error) {
+    return <ErrorState error={error} />;
+  }
+
+  if (data.length === 0) {
+    return <EmptyState />;
+  }
+
   useEffect(() => {
-    if (type === "contributor" && !dimension) {
-      setError("Dimension is required for contributor insights");
-      setLoading(false);
-    } else if (type === "contributor" && !dimensionValuesResolver) {
-      setError("dimensionValuesResolver is required for contributor insights");
-      setLoading(false);
+    if (type === "contributor") {
+      if (!dimension) {
+        setError("dimension is required for contributor insights");
+        setLoading(false);
+        return;
+      }
+      if (!dimensionValuesResolver) {
+        setError(
+          "dimensionValuesResolver is required for contributor insights"
+        );
+        setLoading(false);
+        return;
+      }
     }
   }, [type, dimension, dimensionValuesResolver]);
 
-  // Fetch data
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useCallback(
+    async (isAutoRefresh = false) => {
+      const currentProps = { type, metric, dimension, timeGrain, timeRange };
+      const cacheKey = InsightCache.generateKey(currentProps);
+
+      if (!isAutoRefresh) {
+        const cachedEntry = InsightCache.get(cacheKey) as any;
+        if (cachedEntry && cachedEntry.data) {
+          console.log(`[SDK Cache] Hit for ${type}:`, cacheKey);
+
+          setData(cachedEntry.data);
+
+          if (type === "contributor" && cachedEntry.dims) {
+            setDimensionValues(cachedEntry.dims);
+          }
+
+          setLoading(false);
+          return;
+        }
+      }
+
       try {
-        setLoading(true);
+        if (!isAutoRefresh) setLoading(true);
         setError(null);
 
         const { fromTime, toTime } = calculateTimeRange(timeRange);
 
-        // Fetch dimension values for contributor insights
         let dims: string[] = [];
         if (type === "contributor" && dimension && dimensionValuesResolver) {
           dims = await dimensionValuesResolver(metric, dimension);
           setDimensionValues(dims);
         }
 
-        // Fetch the actual data
         const rawData = await dataResolver(metric, timeGrain, fromTime, toTime);
 
         if (!rawData || rawData.length === 0) {
-          setError("No data available for the selected time range");
           setData([]);
-          setLoading(false);
+          if (!isAutoRefresh) setError("Empty");
           return;
         }
 
-        // Transform data based on insight type
         const transformedData =
           type === "trend"
             ? transformTrendData(rawData, metric)
             : transformContributorData(rawData, dims);
 
+        const cachePayload = {
+          data: transformedData,
+          dims: type === "contributor" ? dims : undefined,
+        };
+
+        InsightCache.set(cacheKey, cachePayload);
+
         setData(transformedData);
-        setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load data");
+      } finally {
         setLoading(false);
       }
-    };
+    },
+    [
+      type,
+      metric,
+      dimension,
+      timeGrain,
+      timeRange,
+      dataResolver,
+      dimensionValuesResolver,
+    ]
+  );
 
-    if (!error) {
-      fetchData();
-    }
-  }, [
-    type,
-    metric,
-    dimension,
-    timeGrain,
-    timeRange,
-    dataResolver,
-    dimensionValuesResolver,
-  ]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  // Render states
-  if (loading) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "white",
-          borderRadius: "12px",
-          border: "1px solid #e5e7eb",
-          padding: "24px",
-          display: "flex",
-          flexDirection: "column",
-          boxSizing: "border-box",
-        }}
-      >
-        <div
-          style={{
-            height: "24px",
-            width: "192px",
-            backgroundColor: "#f3f4f6",
-            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-            marginBottom: "8px",
-            borderRadius: "4px",
-          }}
-        ></div>
-        <div
-          style={{
-            height: "16px",
-            width: "128px",
-            backgroundColor: "#f9fafb",
-            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-            marginBottom: "32px",
-            borderRadius: "4px",
-          }}
-        ></div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "end",
-            gap: "12px",
-            flex: 1,
-            minHeight: 0,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#f9fafb",
-              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              flex: 1,
-              borderRadius: "4px 4px 0 0",
-              height: "60%",
-            }}
-          ></div>
-          <div
-            style={{
-              backgroundColor: "#f9fafb",
-              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              flex: 1,
-              borderRadius: "4px 4px 0 0",
-              height: "80%",
-            }}
-          ></div>
-          <div
-            style={{
-              backgroundColor: "#f9fafb",
-              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              flex: 1,
-              borderRadius: "4px 4px 0 0",
-              height: "40%",
-            }}
-          ></div>
-          <div
-            style={{
-              backgroundColor: "#f9fafb",
-              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              flex: 1,
-              borderRadius: "4px 4px 0 0",
-              height: "90%",
-            }}
-          ></div>
-          <div
-            style={{
-              backgroundColor: "#f9fafb",
-              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              flex: 1,
-              borderRadius: "4px 4px 0 0",
-              height: "70%",
-            }}
-          ></div>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (refreshInterval <= 0) return;
 
-  if (error) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#fef2f2",
-          borderRadius: "12px",
-          border: "1px solid #fca5a5",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "24px",
-          boxSizing: "border-box",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              backgroundColor: "#fee2e2",
-              padding: "12px",
-              borderRadius: "50%",
-              display: "inline-block",
-              marginBottom: "16px",
-            }}
-          >
-            <svg
-              style={{ width: "32px", height: "32px", color: "#dc2626" }}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <p style={{ color: "#dc2626", fontWeight: 500 }}>{error}</p>
-        </div>
-      </div>
-    );
-  }
+    const intervalId = setInterval(() => {
+      fetchData(true);
+    }, refreshInterval);
 
-  if (data.length === 0) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          backgroundColor: "#f9fafb",
-          borderRadius: "12px",
-          border: "1px solid #e5e7eb",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "24px",
-          boxSizing: "border-box",
-        }}
-      >
-        <div style={{ textAlign: "center" }}>
-          <svg
-            style={{
-              width: "3rem",
-              height: "3rem",
-              color: "#9ca3af",
-              margin: "0 auto 1rem auto",
-            }}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <p style={{ color: "#4b5563" }}>No data available for this insight</p>
-        </div>
-      </div>
-    );
-  }
+    return () => clearInterval(intervalId);
+  }, [refreshInterval, fetchData]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (refreshInterval <= 0) return;
+
+    const intervalId = setInterval(() => {
+      fetchData(true);
+    }, refreshInterval);
+
+    return () => clearInterval(intervalId);
+  }, [refreshInterval, fetchData]);
 
   return (
     <div
@@ -325,13 +213,18 @@ export const Insight: React.FC<InsightProps> = ({
           flex: 1,
           width: "100%",
           minHeight: "300px",
+          height: "350px",
         }}
       >
-        {type === "trend" ? (
-          <TrendChart data={data} metric={metric} />
-        ) : (
-          <ContributorChart data={data} dimensionValues={dimensionValues} />
-        )}
+        <InsightErrorBoundary
+          fallback={<ErrorState error="Visualization failed to render" />}
+        >
+          {type === "trend" ? (
+            <TrendChart data={data} metric={metric} />
+          ) : (
+            <ContributorChart data={data} dimensionValues={dimensionValues} />
+          )}
+        </InsightErrorBoundary>
       </div>
     </div>
   );

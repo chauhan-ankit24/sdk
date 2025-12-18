@@ -1,10 +1,8 @@
 export type InsightType = "trend" | "contributor";
 export type TimeGrain = "daily" | "weekly" | "monthly";
 
-export interface InsightProps {
-  type: InsightType;
+interface BaseInsightProps {
   metric: string;
-  dimension?: string;
   timeGrain: TimeGrain;
   timeRange: number;
   dataResolver: (
@@ -13,10 +11,27 @@ export interface InsightProps {
     fromTime: Date,
     toTime: Date
   ) => Promise<any[]>;
+  width?: string | number;
+  height?: string | number;
+  refreshInterval?: number;
+}
+
+interface TrendInsightProps extends BaseInsightProps {
+  type: "trend";
+  dimension?: string;
   dimensionValuesResolver?: (
     metric: string,
     dimension: string
   ) => Promise<string[]>;
-  width?: string | number;
-  height?: string | number;
 }
+
+interface ContributorInsightProps extends BaseInsightProps {
+  type: "contributor";
+  dimension: string;
+  dimensionValuesResolver: (
+    metric: string,
+    dimension: string
+  ) => Promise<string[]>;
+}
+
+export type InsightProps = TrendInsightProps | ContributorInsightProps;

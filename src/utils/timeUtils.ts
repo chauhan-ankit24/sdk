@@ -1,4 +1,6 @@
-export const calculateTimeRange = (days: number): { fromTime: Date; toTime: Date } => {
+export const calculateTimeRange = (
+  days: number
+): { fromTime: Date; toTime: Date } => {
   const toTime = new Date();
   const fromTime = new Date();
   fromTime.setDate(toTime.getDate() - days);
