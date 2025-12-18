@@ -1,6 +1,6 @@
 {
   "name": "insight-sdk",
-  "version": "1.0.6",
+  "version": "1.0.20",
   "description": "A React SDK for displaying insights with interactive charts and data visualizations",
   "author": "Insight SDK Team",
   "license": "ISC",

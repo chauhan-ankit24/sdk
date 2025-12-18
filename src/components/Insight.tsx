@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { InsightProps } from "../types";
 import { calculateTimeRange } from "../utils/timeUtils";
-import { transformTrendData, transformContributorData } from "../utils/transformers";
+import {
+  transformTrendData,
+  transformContributorData,
+} from "../utils/transformers";
 import TrendChart from "./TrendChart";
 import ContributorChart from "./ContributorChart";
 
@@ -13,6 +16,8 @@ export const Insight: React.FC<InsightProps> = ({
   timeRange,
   dataResolver,
   dimensionValuesResolver,
+  width = "100%",
+  height = "400px",
 }) => {
   const [data, setData] = useState<any[]>([]);
   const [dimensionValues, setDimensionValues] = useState<string[]>([]);
@@ -86,10 +91,93 @@ export const Insight: React.FC<InsightProps> = ({
   // Render states
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96 bg-gray-50 rounded-lg border border-gray-200">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading insight...</p>
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "white",
+          borderRadius: "12px",
+          border: "1px solid #e5e7eb",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            height: "24px",
+            width: "192px",
+            backgroundColor: "#f3f4f6",
+            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            marginBottom: "8px",
+            borderRadius: "4px",
+          }}
+        ></div>
+        <div
+          style={{
+            height: "16px",
+            width: "128px",
+            backgroundColor: "#f9fafb",
+            animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            marginBottom: "32px",
+            borderRadius: "4px",
+          }}
+        ></div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "end",
+            gap: "12px",
+            flex: 1,
+            minHeight: 0,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#f9fafb",
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              flex: 1,
+              borderRadius: "4px 4px 0 0",
+              height: "60%",
+            }}
+          ></div>
+          <div
+            style={{
+              backgroundColor: "#f9fafb",
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              flex: 1,
+              borderRadius: "4px 4px 0 0",
+              height: "80%",
+            }}
+          ></div>
+          <div
+            style={{
+              backgroundColor: "#f9fafb",
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              flex: 1,
+              borderRadius: "4px 4px 0 0",
+              height: "40%",
+            }}
+          ></div>
+          <div
+            style={{
+              backgroundColor: "#f9fafb",
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              flex: 1,
+              borderRadius: "4px 4px 0 0",
+              height: "90%",
+            }}
+          ></div>
+          <div
+            style={{
+              backgroundColor: "#f9fafb",
+              animation: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              flex: 1,
+              borderRadius: "4px 4px 0 0",
+              height: "70%",
+            }}
+          ></div>
         </div>
       </div>
     );
@@ -97,22 +185,45 @@ export const Insight: React.FC<InsightProps> = ({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-96 bg-red-50 rounded-lg border border-red-200">
-        <div className="text-center p-6">
-          <svg
-            className="w-12 h-12 text-red-500 mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#fef2f2",
+          borderRadius: "12px",
+          border: "1px solid #fca5a5",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px",
+          boxSizing: "border-box",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              backgroundColor: "#fee2e2",
+              padding: "12px",
+              borderRadius: "50%",
+              display: "inline-block",
+              marginBottom: "16px",
+            }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <p className="text-red-700 font-medium">{error}</p>
+            <svg
+              style={{ width: "32px", height: "32px", color: "#dc2626" }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <p style={{ color: "#dc2626", fontWeight: 500 }}>{error}</p>
         </div>
       </div>
     );
@@ -120,10 +231,28 @@ export const Insight: React.FC<InsightProps> = ({
 
   if (data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-96 bg-gray-50 rounded-lg border border-gray-200">
-        <div className="text-center p-6">
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#f9fafb",
+          borderRadius: "12px",
+          border: "1px solid #e5e7eb",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "24px",
+          boxSizing: "border-box",
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
           <svg
-            className="w-12 h-12 text-gray-400 mx-auto mb-4"
+            style={{
+              width: "3rem",
+              height: "3rem",
+              color: "#9ca3af",
+              margin: "0 auto 1rem auto",
+            }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -135,29 +264,75 @@ export const Insight: React.FC<InsightProps> = ({
               d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p className="text-gray-600">No data available for this insight</p>
+          <p style={{ color: "#4b5563" }}>No data available for this insight</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 capitalize">
+    <div
+      style={{
+        width: width,
+        height: height,
+        backgroundColor: "white",
+        borderRadius: "12px",
+        boxShadow:
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+        border: "1px solid #e5e7eb",
+        padding: "24px",
+        transition: "all 0.2s ease-in-out",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ marginBottom: "20px", flexShrink: 0 }}>
+        <h3
+          style={{
+            fontSize: "18px",
+            fontWeight: 700,
+            color: "#111827",
+            textTransform: "capitalize",
+            margin: 0,
+          }}
+        >
           {type} Insight: {metric}
         </h3>
-        <p className="text-sm text-gray-500 mt-1">
+        <p
+          style={{
+            fontWeight: 400,
+            color: "#9ca3af",
+            fontSize: "14px",
+            margin: "4px 0 0 0",
+          }}
+        >
           {timeGrain} data for last {timeRange} days
-          {dimension && ` by ${dimension}`}
+          {dimension && (
+            <span
+              style={{ marginLeft: "6px", color: "#2563eb", fontWeight: 500 }}
+            >
+              by {dimension}
+            </span>
+          )}
         </p>
       </div>
 
-      {type === "trend" ? (
-        <TrendChart data={data} metric={metric} />
-      ) : (
-        <ContributorChart data={data} dimensionValues={dimensionValues} />
-      )}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          width: "100%",
+          minHeight: "300px",
+        }}
+      >
+        {type === "trend" ? (
+          <TrendChart data={data} metric={metric} />
+        ) : (
+          <ContributorChart data={data} dimensionValues={dimensionValues} />
+        )}
+      </div>
     </div>
   );
 };

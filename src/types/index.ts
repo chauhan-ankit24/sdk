@@ -17,4 +17,6 @@ export interface InsightProps {
     metric: string,
     dimension: string
   ) => Promise<string[]>;
+  width?: string | number;
+  height?: string | number;
 }
