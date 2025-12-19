@@ -1,0 +1,46 @@
+.insight-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.insight-header {
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.insight-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.insight-subtitle {
+  font-weight: 400;
+  color: #9ca3af;
+  font-size: 14px;
+  margin: 4px 0 0 0;
+}
+
+.insight-dimension {
+  margin-left: 6px;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.insight-chart-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  min-height: 300px;
+  height: 350px;
+}

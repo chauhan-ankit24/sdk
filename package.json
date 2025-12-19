@@ -1,6 +1,6 @@
 {
   "name": "insight-sdk",
-  "version": "1.1.0",
+  "version": "1.1.8",
   "description": "A React SDK for displaying insights with interactive charts and data visualizations",
   "author": "Insight SDK Team",
   "license": "ISC",
@@ -19,7 +19,7 @@
     "README.md",
     "LICENSE"
   ],
-  "sideEffects": false,
+  "sideEffects": ["**/*.css"],
   "scripts": {
     "build": "rollup -c",
     "dev": "http-server . -p 3000 -c-1"

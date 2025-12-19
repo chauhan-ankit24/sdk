@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
+import { i18n } from "../utils/i18n";
 
 interface Props {
   children: ReactNode;
@@ -16,7 +17,7 @@ export class InsightErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("SDK Visualization Crash:", error, errorInfo);
+    console.error(i18n.sdkVisualizationCrash, error, errorInfo);
   }
 
   public render() {

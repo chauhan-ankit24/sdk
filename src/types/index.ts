@@ -18,11 +18,6 @@ interface BaseInsightProps {
 
 interface TrendInsightProps extends BaseInsightProps {
   type: "trend";
-  dimension?: string;
-  dimensionValuesResolver?: (
-    metric: string,
-    dimension: string
-  ) => Promise<string[]>;
 }
 
 interface ContributorInsightProps extends BaseInsightProps {
