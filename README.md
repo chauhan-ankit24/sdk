@@ -4,19 +4,14 @@ A React SDK for displaying insights with interactive charts and data visualizati
 
 ## Features
 
-- 📊 **Interactive Charts**: Trend and contributor insights with responsive visualizations
 - 🎨 **Customizable**: Flexible styling and configuration options
 - 📱 **Responsive**: Mobile-friendly charts that adapt to different screen sizes
-- ⚡ **TypeScript**: Full type safety and IntelliSense support
-- 🪝 **React Hooks**: Modern React patterns with hooks for state management
-- 🧹 **Linting**: ESLint configured for code quality
 - ❌ **Error Handling**: Shows errors for wrong data, empty array for 0 data
 - 🦴 **Skeleton Loading**: Animated skeleton states during data fetch
 - ✅ **Prop Validation**: TypeScript interfaces ensure valid props
 - 💾 **Caching**: In-memory caching for performance
 - 🔄 **Polling**: refreshInterval={3000} for data updates
 - 🛡️ **Error Boundary**: Catches and handles component errors
-- 📦 **Min Dependencies**: Only tslib, peer deps for React
 
 ## Installation
 
@@ -130,3 +125,4 @@ const dimensionValuesResolver = async (metric, dimension) => {
 
 ISC License - see [LICENSE](LICENSE) file for details.
 "
+
